@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'NusaHealthCompany.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.parse(
-        'mysql://root:ylvKYelupVSacOkInhyCBHUYdROkEats@junction.proxy.rlwy.net:25459/railway'
+        'postgresql://postgres:IhooLrbCJBRkDPPOLbjtpVPTjBMYmTra@autorack.proxy.rlwy.net:17434/railway'
     )
 }
 
