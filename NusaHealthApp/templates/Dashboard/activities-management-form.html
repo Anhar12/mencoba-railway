@@ -1,0 +1,187 @@
+{% extends "Dashboard/base.html" %}
+{% load static %}
+{% block title %}
+    {% if action == 'add' %}
+        Add
+    {% else %}
+        Update
+    {% endif %}
+    Activity - Nusa Health Company
+{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if not activity and action == 'update'%}
+    <script>
+        function ErrorPopUp(message){
+            Swal.fire({
+                icon: 'error',
+                title: 'Access Denied',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#dc3545',
+            }).then(() => {
+                window.location.href = "{% url 'activities-management' %}";
+            });
+        }
+    
+        ErrorPopUp("Activity not found");
+    </script>
+{% else %}
+    <div class="container pb-3">
+        <div class="w-100 py-3">
+            <h4 class="text-center fw-bold"> 
+                {% if action == 'add' %}
+                    Add New 
+                {% else %}
+                    Update
+                {% endif %} 
+                Activity
+            </h4>
+        </div>
+
+        <div class="px-5 pb-4">
+            <form method="post" id="activity-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="title" class="">Title</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="text-danger">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+            
+                <div class="mb-3">
+                    <label for="body" class="">Body</label>
+                    {{ form.body }}
+                    {% if form.body.errors %}
+                        <div class="text-danger">{{ form.body.errors }}</div>
+                    {% endif %}
+                </div>
+            
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="image" class="">Upload Image</label>
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                            <div class="text-danger">{{ form.image.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <img id="imagePreview" class="preview mt-2 w-100" style="display: none;" />
+                        {% if activity and activity.image %}
+                            <img id="imageNow" src="{{ activity.image.url }}" alt="Activity Image" class="mt-2 now w-100">
+                        {% else %}
+                            <p id="imagePlaceholder" class="mt-2 text-muted mt-4 pt-1">No Activity Image uploaded</p>
+                        {% endif %}
+                    </div>
+                </div>
+            
+                <button type="submit" class="btn btn-success">Save</button>
+                <button id="btn-cancel" class="btn btn-secondary ms-1">Cancel</button>
+            </form>
+        </div>
+
+    </div>
+{% endif %}
+
+{% include 'loading-spinner.html' %}
+
+<script>
+    let url = '';
+    {% if action == 'add' %}
+        url = "{% url 'activities-management-add' %}";
+    {% elif action == 'update' %}
+        url = "{% url 'activities-management-update' activity_id=activity.id %}";
+    {% endif %}
+
+    $('#btn-cancel').click(function() {
+        window.location.href = "{% url 'activities-management' %}";
+    });
+
+    function onLoading() {
+        $('#loading').removeClass('d-none');
+        $('.overlay').removeClass('d-none');
+    }
+
+    function onLoaded() {
+        $('#loading').addClass('d-none');
+        $('.overlay').addClass('d-none');
+    }
+
+    function SuccessPopUp(message){
+        Swal.fire({
+            icon: 'success',
+            title: 'Upload Successfully',
+            text: message,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#198754',
+        }).then(() => {
+            window.location.href = "{% url 'activities-management' %}";
+        });
+    }
+
+    function ErrorPopUp(message){
+        Swal.fire({
+            icon: 'error',
+            title: 'Upload Failed',
+            text: message,
+            confirmButtonText: 'Ok',
+            confirmButtonColor: '#dc3545',
+        });
+    }
+
+    function previewImage(input, previewId, placeholderId, nowId) {
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                $('#' + previewId).attr('src', e.target.result).show();
+                $('#' + placeholderId).hide();
+                $('#' + nowId).hide();
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            $('#' + previewId).hide();
+            $('#' + nowId).show();
+            $('#' + placeholderId).show();
+        }
+    }
+
+    $('#image').on('change', function() {
+        previewImage(this, 'imagePreview', 'imagePlaceholder', 'imageNow');
+    });
+
+    $('#activity-form').on('submit', function(event) {
+        event.preventDefault();
+        onLoading();
+
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                onLoaded();
+                if (response.status === 'success') {
+                    SuccessPopUp(response.message);
+                } else {
+                    ErrorPopUp(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                onLoaded();
+                ErrorPopUp('An error occurred while uploading Blogs.');
+            }
+        });
+    });
+</script>
+{% endblock %}

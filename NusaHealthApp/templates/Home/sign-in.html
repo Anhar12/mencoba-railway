@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Nusa Health Company</title>
+    <link rel="icon" type="image/x-icon" href="static/NusaHealthApp/images/SecondaryLogo.png">
+
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'NusaHealthApp/css/custom.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <section id="sign-in" class="vh-100">
+        <div class="d-flex position-relative w-100">
+            <!-- <a href="{% url 'home' %}" class="btn btn-primary position-absolute rounded-circle fs-4 py-1" style="top: 10px; left: 10px;">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a> -->
+            <div class="w-md-75 w-100 vh-100 d-flex justify-content-center align-items-center bg-light"></div>
+            <div class="w-40 bg-primary vh-100 d-md-block d-none"></div>
+            <div class="signin-card position-absolute top-50 translate-middle d-flex flex-column bg-white rounded p-5 border border-primary" style="left: 30%; width: 35%;">
+                <h1 class="fw-bold text-primary">
+                    Sign In
+                </h1>
+                <p class="text-secondary mb-4">
+                    <i>Sign In to manage NusaHealth web content</i>
+                </p>
+                <form id="form-signin" method="POST" autocomplete="off" action="" class="d-flex flex-column align-items-center gap-2 mt-2">
+                    {% csrf_token %}
+                    <div class="text-danger d-none w-100 fs-smaller" id="error-message"></div>
+    
+                    <div class="form-group w-100">
+                        <label for="email" class="text-primary bg-white fw-bold mb-2">Username</label>
+                        <div class="position-relative">
+                            <input type="text" class="form-control fs-small py-2 pe-5" id="username" name="username" required placeholder="Type your username here..." maxlength="150"/>
+                            <div class="text-primary position-absolute translate-middle-y top-50 end-0 me-3" style="cursor: pointer;">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group w-100 mt-3">
+                        <label for="password" class="text-primary bg-white fw-bold mb-2">Password</label>
+                        <div class="position-relative">
+                            <input type="password" class="form-control password-input fs-small py-2 pe-5" id="password" name="password" required placeholder="Type your password here..." maxlength="150"/>
+                            <password-visibility id="password-visibility" class="text-primary position-absolute translate-middle-y top-50 end-0 me-3" style="cursor: pointer;">
+                                <i id="password-icon" class="fa-solid fa-eye"></i>
+                            </password-visibility>
+                        </div>
+                    </div>
+    
+                    <div class="form-check w-100 text-dark mb-4">
+                        <input class="form-check-input" type="checkbox" value="" id="remember">
+                        <label class="form-check-label fs-small" for="remember">
+                            Remember me
+                        </label>
+                    </div>
+                    <!-- <button type="submit" class="btn btn-primary w-100 mx-auto fs-small fw-bold rounded-1 py-2">Sign In</button> -->
+                    <div class="d-flex justify-content-between w-100">
+                        <a href="{% url 'home' %}" class="btn btn-secondary w-50 mx-1 fs-small fw-bold rounded-1 py-2">Back</a>
+                        <button type="submit" class="btn btn-primary w-50 mx-1 fs-small fw-bold rounded-1 py-2">Sign In</button>
+                    </div>
+                                      
+                </form>
+            </div>
+            <img src="static/NusaHealthApp/images/signin-hero.png" alt="" width="450px" class="position-absolute translate-middle top-50 d-md-block d-none" style="left: 73%;">
+        </div>
+    </section>
+
+    {% include 'loading-spinner.html' %}
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            {% if messages %}
+                {% for message in messages %}
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Access Denied',
+                        text: '{{ message }}',
+                        confirmButtonText: 'Ok',
+                        confirmButtonColor: '#DC3545',
+                    });
+                {% endfor %}
+            {% endif %}
+
+            function resetInput() {
+                $('.form-group input').val('');
+                $('.form-check input').prop('checked', false);
+            }
+            resetInput();
+            
+            $('#password-visibility').on('click', function() {
+                if ($('#password').attr('type') === 'password') {
+                    $('#password').attr('type', 'text');
+                    $('#password-icon').removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    $('#password').attr('type', 'password');
+                    $('#password-icon').removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+            
+            function getCSRFToken() {
+                return document.cookie.split('; ').find(row => row.startsWith('csrftoken=')).split('=')[1];
+            }
+
+            $('#form-signin').on('submit', function(event) {
+                event.preventDefault();
+                $('#loading').removeClass('d-none');
+                $('.overlay').removeClass('d-none');
+    
+                const username = $('#username').val();
+                const password = $('#password').val();
+    
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'sign-in' %}",
+                    data: {
+                        username: username,
+                        password: password,
+                        csrfmiddlewaretoken: getCSRFToken()
+                    },
+                    success: function(response) {
+                        $('#loading').addClass('d-none');
+                        $('.overlay').addClass('d-none');
+                        if (response.is_superuser) {
+                            window.location.href = "{% url 'dashboard' %}";
+                        } else {
+                            $('#error-message').text(response.error).addClass('d-block').removeClass('d-none');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#loading').addClass('d-none');
+                        $('.overlay').addClass('d-none');
+                        let errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'An unexpected error occurred.';
+                        $('#error-message').text(errorMessage).addClass('d-block').removeClass('d-none');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

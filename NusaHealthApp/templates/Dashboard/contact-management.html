@@ -1,0 +1,279 @@
+{% extends "Dashboard/base.html" %}
+
+{% block title %}
+Contact Management - Nusa Health Company
+{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<div class="container pb-3">
+    <div class="w-100 py-3">
+        <h4 class="text-center fw-bold">Contact Content Management</h4>
+    </div>
+    <div class="d-flex flex-column gap-2 align-items-center w-100 container">
+        <!-- contact -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="contactManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="contactManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Contact Section Management
+            </p>
+            
+            <div id="contactFormContainer" class="d-none px-5">
+                <form id="contactForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="phone_number" class="">Phone Number</label>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ contact.phone_number|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ contact.email|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="whatsapp" class="">Whatsapp</label>
+                            <input type="text" class="form-control" id="whatsapp" name="whatsapp" value="{{ contact.whatsapp|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="instagram" class="">Instagram</label>
+                            <input type="text" class="form-control" id="instagram" name="instagram" value="{{ contact.instagram|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="facebook" class="">Facebook</label>
+                            <input type="text" class="form-control" id="facebook" name="facebook" value="{{ contact.facebook|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="address" class="">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="4">
+                                {% if contact and contact.address %}
+                                    {{ contact.address }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>                    
+                    
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="contactManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+
+        <!-- location -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="locationManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="locationManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Location Section Management
+            </p>
+            
+            <div id="locationFormContainer" class="d-none px-5">
+                <form id="locationForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="map-container">
+                        <div id="map" class="w-100 mb-3" style="height: 350px;"></div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="latitude" class="">Latitude</label>
+                            <input type="text" class="form-control" id="latitude" readonly name="latitude" value="{{ location.latitude|default:'-0.467248' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="longitude" class="">Longitude</label>
+                            <input type="text" class="form-control" id="longitude" readonly name="longitude" value="{{ location.longitude|default:'117.157774' }}">
+                        </div>
+                    </div>                    
+                    
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="locationManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'loading-spinner.html' %}
+
+<script>
+    $(document).ready(function() {
+        function cleanTextArea(){
+            $('#address').val($('#address').val().trim());
+        }
+        cleanTextArea();
+
+        function SuccessPopUp(message){
+            Swal.fire({
+                icon: 'success',
+                title: 'Upload Successfully',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#198754',
+            }).then(() => {
+                location.reload();
+            });
+        }
+
+        function ErrorPopUp(message){
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload Failed',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#dc3545',
+            });
+        }
+
+        function buttonEvent(btn, formContainer, formInput) {
+            var formElem = $('#' + formContainer);
+            var iconElem = $('#' + btn + 'Icon');
+            var btnElem = $('#' + btn);
+
+            formElem.addClass('d-none').hide();
+            iconElem.removeClass('rotate-down');
+            btnElem.removeClass('text-primary');
+
+            btnElem.on('click', function() {
+                if (formElem.hasClass('d-none')) {
+                    formElem.removeClass('d-none').stop(true, true).slideDown(300);
+                    iconElem.addClass('rotate-down');
+                    btnElem.addClass('text-primary');
+                } else {
+                    formElem.stop(true, true).slideUp(300, function() {
+                        formElem.addClass('d-none');
+                    });
+                    iconElem.removeClass('rotate-down');
+                    btnElem.removeClass('text-primary');
+                }
+            });
+
+            $('#' + btn + 'Cancel').on('click', function() {
+                event.preventDefault();
+                formElem.stop(true, true).slideUp(300, function() {
+                    formElem.addClass('d-none');
+                });
+                iconElem.removeClass('rotate-down');
+                btnElem.removeClass('text-primary');
+                $('#' + formInput)[0].reset();
+                $('.preview').hide();
+                $('.placeholder').show();
+                $('.now').show();
+                cleanTextArea();
+            });
+        }
+
+        function onLoading() {
+            $('#loading').removeClass('d-none');
+            $('.overlay').removeClass('d-none');
+        }
+
+        function onLoaded() {
+            $('#loading').addClass('d-none');
+            $('.overlay').addClass('d-none');
+        }
+
+        buttonEvent('contactManagementBtn', 'contactFormContainer', 'contactForm');
+        buttonEvent('locationManagementBtn', 'locationFormContainer', 'locationForm');
+
+        let latitude = parseFloat($('#latitude').val());
+        let longitude = parseFloat($('#longitude').val());
+
+        const lokasiAwal = [latitude, longitude];
+
+        const map = L.map('map').setView(lokasiAwal, 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors',
+        }).addTo(map);       
+
+        let marker = L.marker(lokasiAwal, { draggable: true }).addTo(map);
+
+        function updateLatLng(lat, lng) {
+            $('#latitude').val(lat.toFixed(6));
+            $('#longitude').val(lng.toFixed(6));
+        }
+
+        marker.on('dragend', function () {
+            const { lat, lng } = marker.getLatLng();
+            updateLatLng(lat, lng);
+        });
+
+        map.on('click', function (e) {
+            const { lat, lng } = e.latlng;
+            marker.setLatLng([lat, lng]);
+            updateLatLng(lat, lng);
+        });
+
+        updateLatLng(lokasiAwal[0], lokasiAwal[1]);
+
+        $('#contactForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            $('#address').val($('#address').val().trim());
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-contact' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+        
+        $('#locationForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-location' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+
+    });
+</script>
+
+{% endblock %}

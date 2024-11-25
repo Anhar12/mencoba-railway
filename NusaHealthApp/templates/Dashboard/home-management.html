@@ -1,0 +1,449 @@
+{% extends "Dashboard/base.html" %}
+
+{% block title %}
+Home Management - Nusa Health Company
+{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="container pb-3">
+    <div class="w-100 py-3">
+        <h4 class="text-center fw-bold">Home Content Management</h4>
+    </div>
+    <div class="d-flex flex-column gap-2 align-items-center w-100 container">
+        <!-- image slider -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="sliderManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="sliderManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Images Slider Management
+            </p>
+            
+            <div id="sliderFormContainer" class="d-none px-5">
+                <form id="sliderForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="slider1" class="">Image Slider 1</label>
+                            <input type="file" class="form-control" id="slider1" name="slider1">
+                            <img loading="lazy" id="slider1Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if slider and slider.image1 %}
+                                <img loading="lazy" id="slider1Now" src="{{ slider.image1.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="slider1Placeholder" class=" mt-2 text-muted">No image slider uploaded</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="slider2" class="">Image Slider 2</label>
+                            <input type="file" class="form-control" id="slider2" name="slider2">
+                            <img loading="lazy" id="slider2Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if slider and slider.image2 %}
+                                <img loading="lazy" id="slider2Now" src="{{ slider.image2.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="slider2Placeholder" class=" mt-2 text-muted">No image slider uploaded</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="slider3" class="">Image Slider 3</label>
+                            <input type="file" class="form-control" id="slider3" name="slider3">
+                            <img loading="lazy" id="slider3Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if slider and slider.image3 %}
+                                <img loading="lazy" id="slider3Now" src="{{ slider.image3.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="slider3Placeholder" class=" mt-2 text-muted">No image slider uploaded</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="slider4" class="">Image Slider 4</label>
+                            <input type="file" class="form-control" id="slider4" name="slider4">
+                            <img loading="lazy" id="slider4Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if slider and slider.image4 %}
+                                <img loading="lazy" id="slider4Now" src="{{ slider.image4.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="slider4Placeholder" class=" mt-2 text-muted">No image slider uploaded</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="slider5" class="">Image Slider 5</label>
+                            <input type="file" class="form-control" id="slider5" name="slider5">
+                            <img loading="lazy" id="slider5Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if slider and slider.image5 %}
+                                <img loading="lazy" id="slider5Now" src="{{ slider.image5.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="slider5Placeholder" class=" mt-2 text-muted">No image slider uploaded</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="sliderManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+
+        <!-- hero -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="heroManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="heroManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Hero Section Management
+            </p>
+            
+            <div id="heroFormContainer" class="d-none px-5">
+                <form id="heroForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="hero_image" class="">Hero Image</label>
+                            <input type="file" class="form-control" id="hero_image" name="hero_image">
+                            <img loading="lazy" id="heroPreview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if hero and hero.hero_image %}
+                                <img loading="lazy" id="heroNow" src="{{ hero.hero_image.url }}" alt="Hero Image" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="heroPlaceholder" class="mt-2 text-muted">No hero image uploaded</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="heroText" class="">Hero Text</label>
+                            <textarea class="form-control" id="hero_text" name="hero_text" rows="12">
+                                {% if hero and hero.hero_text %}
+                                    {{ hero.hero_text }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="heroManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+
+        <!-- services -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="servicesManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="servicesManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Services Section Management
+            </p>
+            
+            <div id="servicesFormContainer" class="d-none px-5">
+                <form id="servicesForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="service_image1" class="">Services Image 1</label>
+                            <input type="file" class="form-control" id="service_image1" name="service_image1">
+                            <img loading="lazy" id="service1Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if services and services.service_image1 %}
+                                <img loading="lazy" id="service1Now" src="{{ services.service_image1.url }}" alt="Service Image" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="service1Placeholder" class="mt-2 text-muted">No service image uploaded</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="service_title1" class="">Service Title 1</label>
+                            {% if services and services.service_title1 %}
+                                <input type="text" class="form-control mb-3" id="service_title1" name="service_title1" value="{{ services.service_title1 }}">
+                            {% else %}
+                                <input type="text" class="form-control mb-3" id="service_title1" name="service_title1">
+                            {% endif %}
+                            <label for="service_description1" class="">Service Description 1</label>
+                            <textarea class="form-control" id="service_description1" name="service_description1" rows="9">
+                                {% if services and services.service_description1 %}
+                                    {{ services.service_description1 }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="service_image2" class="">Services Image 2</label>
+                            <input type="file" class="form-control" id="service_image2" name="service_image2">
+                            <img loading="lazy" id="service2Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if services and services.service_image2 %}
+                                <img loading="lazy" id="service2Now" src="{{ services.service_image2.url }}" alt="Service Image" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="service2Placeholder" class="mt-2 text-muted">No service image uploaded</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="service_title2" class="">Service Title 2</label>
+                            {% if services and services.service_title2 %}
+                                <input type="text" class="form-control mb-3" id="service_title2" name="service_title2" value="{{ services.service_title2 }}">
+                            {% else %}
+                                <input type="text" class="form-control mb-3" id="service_title2" name="service_title2">
+                            {% endif %}
+                            <label for="service_description2" class="">Service Description 2</label>
+                            <textarea class="form-control" id="service_description2" name="service_description2" rows="9">
+                                {% if services and services.service_description2 %}
+                                    {{ services.service_description2 }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="service_image3" class="">Services Image 3</label>
+                            <input type="file" class="form-control" id="service_image3" name="service_image3">
+                            <img loading="lazy" id="service3Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if services and services.service_image3 %}
+                                <img loading="lazy" id="service3Now" src="{{ services.service_image3.url }}" alt="Service Image" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="service3Placeholder" class="mt-2 text-muted">No service image uploaded</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="service_title3" class="">Service Title 3</label>
+                            {% if services and services.service_title3 %}
+                                <input type="text" class="form-control mb-3" id="service_title3" name="service_title3" value="{{ services.service_title3 }}">
+                            {% else %}
+                                <input type="text" class="form-control mb-3" id="service_title3" name="service_title3">
+                            {% endif %}
+                            <label for="service_description3" class="">Service Description 3</label>
+                            <textarea class="form-control" id="service_description3" name="service_description3" rows="9">
+                                {% if services and services.service_description3 %}
+                                    {{ services.service_description3 }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="servicesManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'loading-spinner.html' %}
+
+<script>
+    $(document).ready(function() {
+        function cleanTextArea(){
+            $('#hero_text').val($('#hero_text').val().trim());
+            $('#service_description1').val($('#service_description1').val().trim());
+            $('#service_description2').val($('#service_description2').val().trim());
+            $('#service_description3').val($('#service_description3').val().trim());
+        }
+        cleanTextArea();
+
+        function SuccessPopUp(message){
+            Swal.fire({
+                icon: 'success',
+                title: 'Upload Successfully',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#198754',
+            }).then(() => {
+                location.reload();
+            });
+        }
+
+        function ErrorPopUp(message){
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload Failed',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#dc3545',
+            });
+        }
+        
+        function onLoading() {
+            $('#loading').removeClass('d-none');
+            $('.overlay').removeClass('d-none');
+        }
+
+        function onLoaded() {
+            $('#loading').addClass('d-none');
+            $('.overlay').addClass('d-none');
+        }
+
+        function buttonEvent(btn, formContainer, formInput) {
+            var formElem = $('#' + formContainer);
+            var iconElem = $('#' + btn + 'Icon');
+            var btnElem = $('#' + btn);
+            
+            formElem.addClass('d-none').hide();
+            iconElem.removeClass('rotate-down');
+            btnElem.removeClass('text-primary');
+            
+            btnElem.on('click', function() {
+                
+                if (formElem.hasClass('d-none')) {
+                    formElem.removeClass('d-none').stop(true, true).slideDown(300);
+                    iconElem.addClass('rotate-down');
+                    btnElem.addClass('text-primary');
+                } else {
+                    formElem.stop(true, true).slideUp(300, function() {
+                        formElem.addClass('d-none');
+                    });
+                    iconElem.removeClass('rotate-down');
+                    btnElem.removeClass('text-primary');
+                }
+            });
+
+            $('#' + btn + 'Cancel').on('click', function() {
+                event.preventDefault();
+                formElem.stop(true, true).slideUp(300, function() {
+                    formElem.addClass('d-none');
+                });
+                iconElem.removeClass('rotate-down');
+                btnElem.removeClass('text-primary');
+                $('#' + formInput)[0].reset();
+                $('.preview').hide();
+                $('.placeholder').show();
+                $('.now').show();
+                cleanTextArea();
+            });
+        }
+
+        buttonEvent('sliderManagementBtn', 'sliderFormContainer', 'sliderForm');
+        buttonEvent('heroManagementBtn', 'heroFormContainer', 'heroForm');
+        buttonEvent('servicesManagementBtn', 'servicesFormContainer', 'servicesForm');
+
+        function previewImage(input, previewId, placeholderId, nowId) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#' + previewId).attr('src', e.target.result).show();
+                    $('#' + placeholderId).hide();
+                    $('#' + nowId).hide();
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                $('#' + previewId).hide();
+                $('#' + nowId).show();
+                $('#' + placeholderId).show();
+            }
+        }        
+
+        $('#hero_image').on('change', function() {
+            previewImage(this, 'heroPreview', 'heroPlaceholder', 'heroNow');
+        });
+
+        for (let i = 1 ; i <= 5 ; i++) {
+            $('#slider'+i.toString()).on('change', function() {
+                previewImage(this, 'slider'+i.toString()+'Preview', 'slider'+i.toString()+'Placeholder', 'slider'+i.toString()+'Now');
+            });
+        }
+
+        for (let i = 1 ; i <= 3 ; i++) {
+            $('#service_image'+i.toString()).on('change', function() {
+                previewImage(this, 'service'+i.toString()+'Preview', 'service'+i.toString()+'Placeholder', 'service'+i.toString()+'Now');
+            });
+        }
+ 
+        $('#sliderForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-slider' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+
+        $('#heroForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            let heroText = $('#hero_text').val().trim();
+            $('#hero_text').val(heroText);
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-hero' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+        
+        $('#servicesForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            $('#service_description1').val($('#service_description1').val().trim());
+            $('#service_description2').val($('#service_description2').val().trim());
+            $('#service_description3').val($('#service_description3').val().trim());
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-services' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+
+    });
+</script>
+
+{% endblock %}

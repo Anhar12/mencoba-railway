@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Blogs - Nusa Health Company
+{% endblock %}
+
+{% block content %}
+  <!-- Blogs start -->
+  <section id="latest-blogs" class="py-5">
+    {% if latest_blog %}
+      <div class="container pt-2">
+        <h1 class="text-center fw-bold text-primary">NusaHealth's Blogs</h1>
+        <p class="lead text-secondary text-center mb-4">
+          <i>Here we share articles about healthy lifestyle, health tips, and the latest information about the world of health.</i>
+        </p>
+
+        <div class="w-100 row rounded bg-white overflow-hidden shadow-card border border-primary mx-2 mb-5" style="height: 350px;">
+          <div class="col-md-6 p-0">
+            <img src="{{ latest_blog.image.url }}" alt="{{ latest_blog.title }}" class="w-100" style="object-fit: cover; height: 350px;" />
+          </div>
+          <div class="col-md-6 px-3 py-4">
+            <div class="border-bottom">
+              <a href="{% url 'blog_detail' latest_blog.id %}" class="text-decoration-none"><h4 class="text-primary fw-semibold text-truncate-2" style="height: 60px;">{{ latest_blog.title }}</h4></a>
+              <p class="text-secondary text-truncate-6" style="height: 145px;">{{ latest_blog.body }}</p>
+            </div>
+
+            <div class="px-3 py-4 row justify-content-between align-items-center overflow-hidden" style="height: 80px;">
+              <div class="d-flex flex-wrap gap-2 col-8 p-0">
+                <span class="bg-primary text-white rounded py-1 px-3">{{ latest_blog.category }}</span>
+              </div>
+
+              <div class="col-4 p-0">
+                <p class="m-0 text-end">{{ latest_blog.publish|date:'d, M Y' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- Search and Latest Blogs -->
+  <section id="search-blogs" class="pb-5">
+    <div class="container">
+      <!-- SEARCH -->
+      <div class="d-flex flex-column gap-2 align-items-center w-100">
+        <form method="GET" class="row container w-100 justify-content-between" autocomplete="off">
+          <input class="form-control" style="width: 95%;" type="search" name="q" placeholder="Search blogs" value="{{ query|default:'' }}" aria-label="Search" />
+          <button class="btn btn-outline-primary px-2" style="width: 4%;" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+
+        {% if blogs %}
+          <div class="row w-100">
+            {% for blog in blogs %}
+              <div class="col-md-4 p-2" style="cursor: pointer;">
+                <div class="rounded shadow-btn bg-white overflow-hidden border border-primary">
+                  <a href="{% url 'blog_detail' blog.id %}"><img src="{{ blog.image.url }}" class="w-100 m-0 border-bottom border-secondary" style="height: 200px; object-fit: cover;" alt="{{ blog.title }}" /></a>
+
+                  <div class="my-2 mx-3 border-bottom">
+                    <a href="{% url 'blog_detail' blog.id %}" class="text-decoration-none"><h5 class="fw-semibold text-truncate-1 fs-5" style="height: 25px;">{{ blog.title }}</h5></a>
+                    <p class="text-secondary fs-small text-truncate-3 text-justify" style="height: 55px;">{{ blog.body }}</p>
+                  </div>
+
+                  <div class="m-3 row justify-content-between align-items-center overflow-hidden" style="height: 35px;">
+                    <div class="d-flex flex-wrap gap-2 col-8 p-0">
+                      <span class="bg-primary text-white rounded fs-small py-1 px-3">{{ blog.category }}</span>
+                    </div>
+
+                    <div class="col-4 p-0">
+                      <p class="m-0 text-end" style="font-size: 14px;">{{ blog.publish|date:'d, M Y' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-warning text-center w-100">No blogs found.</div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    $(document).ready(function () {
+      // Variabel untuk menyimpan posisi scroll
+      var lastScrollPosition = 0
+    
+      // Saat form disubmit
+      $('form').on('submit', function () {
+        // Simpan posisi scroll saat ini
+        lastScrollPosition = $(window).scrollTop()
+        // Simpan posisi scroll ke localStorage
+        localStorage.setItem('scrollPosition', lastScrollPosition)
+      })
+    
+      // Setelah halaman selesai dimuat
+      $(window).on('load', function () {
+        // Ambil posisi scroll dari localStorage
+        var savedScrollPosition = localStorage.getItem('scrollPosition')
+        if (savedScrollPosition) {
+          $(window).scrollTop(savedScrollPosition)
+          localStorage.removeItem('scrollPosition')
+        }
+      })
+    
+      $('#show-all-btn').on('click', function () {
+        $('.category.d-none').removeClass('d-none')
+        $(this).hide()
+        $('#show-less-btn').removeClass('d-none')
+      })
+    
+      $('#show-less-btn').on('click', function () {
+        $('.category').slice(4).addClass('d-none')
+        $(this).addClass('d-none')
+        $('#show-all-btn').show()
+      })
+    })
+  </script>
+{% endblock %}

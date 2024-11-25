@@ -1,0 +1,179 @@
+{% extends "Dashboard/base.html" %}
+{% load static %}
+{% block title %}
+Blogs Management - Nusa Health Company
+{% endblock %}
+
+{% block content %}
+<div class="container pb-3">
+    <div class="w-100 py-3 mb-3">
+        <h4 class="text-center fw-bold">Blogs Management</h4>
+    </div>
+
+    <div class="d-flex flex-column gap-2 align-items-center w-100 container">
+        <!-- Form Pencarian -->
+        <div class="row w-100">
+            <form method="GET" class="col-10 d-flex gap-2" autocomplete="off">
+                <input class="form-control w-75" type="search" name="q" placeholder="Search blogs by title"
+                    value="{{ query|default:'' }}" aria-label="Search">
+                <select name="category" class="form-control w-25" aria-label="Category Filter">
+                    <option value="">All Categories</option>
+                    {% for category_value, category_name in categories %}
+                    <option value="{{ category_value }}" {% if category_value|default_if_none:'' == selected_category %}selected{% endif %}>
+                        {{ category_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <button class="btn btn-outline-primary px-2" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            <a href="{% url 'blogs-management-add' %}" class="btn btn-success col-2">Add New Blogs</a>
+        </div>
+
+        <div id="latest-blogs" class="container py-3">
+            <div class="d-flex w-100 justify-content-between border-bottom py-2">
+                <h4 class="fw-bold w-25">Latest Blogs</h4>
+                <div class="row d-flex w-75 justify-content-end flex-wrap">
+                    {% for category_value, category_name in categories %}
+                    <a href="?category={{ category_value }}&q={{ query|default:'' }}" class="btn btn-sm col-md-2 me-2 mb-2 {% if category_value == selected_category %}btn-primary{% else %}btn-outline-primary{% endif %} 
+                       {% if forloop.counter > 4 %}d-none category{% endif %}">
+                        {{ category_name }}
+                    </a>
+                    {% endfor %}                
+                    
+                    <button id="show-all-btn" class="btn btn-primary btn-sm col-md-2 mb-2">Show All</button>
+                    <button id="show-less-btn" class="btn btn-secondary btn-sm col-md-2 mb-2 d-none">Show Less</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menampilkan Blog atau Pesan Jika Tidak Ada -->
+        <div class="row w-100">
+            {% if blogs %}
+                {% for blog in blogs %}
+                <div class="col-md-4 p-2 hover-scaleup" style="cursor: pointer;">
+                    <div class="rounded shadow bg-white overflow-hidden border">
+                        <img src="{{ blog.image.url }}" class="w-100 m-0 border-bottom border-secondary"
+                            style="height: 200px; object-fit: cover;" alt="{{ blog.title }}">
+                        <div class="my-2 mx-3 border-bottom">
+                            <h5 class="fw-semibold text-truncate-1 fs-5" style="height: 25px;">
+                                {{ blog.title }}
+                            </h5>
+                            <p class="text-secondary fs-small text-truncate-3 text-justify" style="height: 55px;">
+                                {{ blog.body }}
+                            </p>
+                        </div>
+                        <div class="my-2 mx-3 row justify-content-between align-items-center overflow-hidden"
+                            style="height: 35px;">
+                            <div class="d-flex flex-wrap gap-2 col-8 p-0">
+                                <span class="bg-primary text-white rounded fs-small py-1 px-3">{{ blog.category }}</span>
+                            </div>
+                            <div class="col-4 p-0">
+                                <p class="m-0 text-end" style="font-size: 14px;">
+                                    {{ blog.publish|date:"d, M Y" }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="m-3 justify-content-end row">
+                            <div class="col-2 m-0 p-0 text-end">
+                                <a href="{% url 'blogs-management-update' blog.id %}" class="text-warning fs-4"><i
+                                        class="fas fa-pen"></i></a>
+                            </div>
+                            <div class="col-2 m-0 p-0 text-end">
+                                <button class="text-danger fs-4 delete-btn border-0 bg-transparent"
+                                    data-url="{% url 'blogs-management-delete' blog.id %}"><i
+                                        class="fas fa-trash-alt delete-btn"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="w-100 d-flex justify-content-center mt-3">
+                    <span class="d-flex gap-2 align-items-center">
+                        {% if blogs.has_previous %}
+                            <a class="text-primary fs-3 fw-bold me-2 text-decoration-none" href="?page=1"><i class="fa-solid fa-angles-left"></i></a>
+                            <a class="text-primary fs-3 fw-bold me-2 text-decoration-none" href="?page={{ blogs.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a>
+                        {% endif %}
+                
+                        <span>Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}</span>
+                
+                        {% if blogs.has_next %}
+                            <a class="text-primary fs-3 fw-bold ms-2 text-decoration-none" href="?page={{ blogs.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a>
+                            <a class="text-primary fs-3 fw-bold ms-2 text-decoration-none" href="?page={{ blogs.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a>
+                        {% endif %}
+                    </span>
+                </div>
+            {% else %}
+            <div class="alert alert-warning text-center w-100">
+                No blogs found.
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        $("#show-all-btn").on("click", function () {
+            $(".category.d-none").removeClass("d-none");
+            $(this).hide();
+            $("#show-less-btn").removeClass("d-none");
+        });
+
+        $("#show-less-btn").on("click", function () {
+            $(".category").slice(4).addClass("d-none");
+            $(this).addClass("d-none");
+            $("#show-all-btn").show();
+        });
+
+        $('.delete-btn').on('click', function (e) {
+            e.preventDefault();
+
+            var element = $(this);
+            var url = $(this).data('url');
+
+            Swal.fire({
+                title: 'Are you sure want to delete this blog?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        success: function (response) {
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Successfully',
+                                    text: response.message,
+                                    confirmButtonText: 'Ok',
+                                    confirmButtonColor: '#198754',
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', response.message, 'error');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

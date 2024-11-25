@@ -1,0 +1,142 @@
+{% extends "Dashboard/base.html" %}
+{% load static %}
+{% block title %}
+Activities Management - Nusa Health Company
+{% endblock %}
+
+{% block content %}
+<div class="container pb-3">
+    <div class="w-100 py-3 mb-3">
+        <h4 class="text-center fw-bold">Activities Management</h4>
+    </div>
+
+    <div class="d-flex flex-column gap-2 align-items-center w-100 container">
+        <!-- Form Pencarian -->
+        <div class="row w-100">
+            <form method="GET" class="col-10 d-flex gap-2" autocomplete="off">
+                <input class="form-control w-100" type="search" name="q" placeholder="Search activities" 
+                    value="{{ query|default:'' }}" aria-label="Search">
+                <button class="btn btn-outline-primary px-2" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            <a href="{% url 'activities-management-add' %}" class="btn btn-success col-2">Add New Activities</a>
+        </div>
+
+        <!-- Latest Activity -->
+        <div id="latest-activity" class="container py-3">
+            <div class="d-flex w-100 justify-content-between border-bottom py-2">
+                <h4 class="fw-bold w-25">Latest Activities</h4>
+                <!-- {% if latest_activity %}
+                    <div class="rounded shadow bg-white overflow-hidden border p-2 d-flex align-items-center gap-3" style="max-height: 150px;">
+                        <img src="{{ latest_activity.image.url }}" alt="{{ latest_activity.title }}" 
+                            class="rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-1 text-truncate">{{ latest_activity.title }}</h5>
+                            <p class="text-secondary fs-small text-truncate-2 m-0">{{ latest_activity.body }}</p>
+                            <p class="text-muted m-0" style="font-size: 12px;">Published: {{ latest_activity.publish|date:"d, M Y" }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No latest activities available.</p>
+                {% endif %} -->
+            </div>
+        </div>
+
+        <!-- Activities List -->
+        <div class="row w-100">
+            {% if activities %}
+                {% for activity in activities %}
+                <div class="col-md-4 p-2 hover-scaleup" style="cursor: pointer;">
+                    <div class="rounded shadow bg-white overflow-hidden border">
+                        <img src="{{ activity.image.url }}" class="w-100 m-0 border-bottom border-secondary" 
+                             style="height: 200px; object-fit: cover;" alt="{{ activity.title }}">
+                        <div class="my-2 mx-3 border-bottom">
+                            <h5 class="fw-semibold text-truncate-1 fs-5" style="height: 25px;">{{ activity.title }}</h5>
+                            <p class="text-secondary fs-small text-truncate-3 text-justify" style="height: 55px;">
+                                {{ activity.body }}
+                            </p>
+                        </div>
+                        <div class="my-2 mx-3 row justify-content-between align-items-center overflow-hidden" 
+                             style="height: 35px;">
+                            <div class="col-2 d-flex gap-2">
+                                <div class="m-0 p-0 text-end">
+                                    <a href="{% url 'activities-management-update' activity.id %}" class="text-warning fs-4"><i class="fas fa-pen"></i></a>
+                                </div>
+                                <div class="m-0 p-0 text-end">
+                                    <button class="text-danger fs-4 delete-btn border-0 bg-transparent" 
+                                            data-url="{% url 'activities-management-delete' activity.id %}"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-4 p-0">
+                                <p class="m-0 text-end" style="font-size: 14px;">
+                                    {{ activity.publish|date:"d, M Y" }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="w-100 d-flex justify-content-center mt-3">
+                    <span class="d-flex gap-2 align-items-center">
+                        {% if activities.has_previous %}
+                            <a class="text-primary fs-3 fw-bold me-2 text-decoration-none" href="?page=1"><i class="fa-solid fa-angles-left"></i></a>
+                            <a class="text-primary fs-3 fw-bold me-2 text-decoration-none" href="?page={{ activities.previous_page_number }}"><i class="fa-solid fa-angle-left"></i></a>
+                        {% endif %}
+                
+                        <span>Page {{ activities.number }} of {{ activities.paginator.num_pages }}</span>
+                
+                        {% if activities.has_next %}
+                            <a class="text-primary fs-3 fw-bold ms-2 text-decoration-none" href="?page={{ activities.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a>
+                            <a class="text-primary fs-3 fw-bold ms-2 text-decoration-none" href="?page={{ activities.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a>
+                        {% endif %}
+                    </span>
+                </div>
+            {% else %}
+            <div class="alert alert-warning text-center w-100">
+                No activities found.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        $('.delete-btn').on('click', function(e) {
+            e.preventDefault();
+            var url = $(this).data('url');
+            Swal.fire({
+                title: 'Are you sure want to delete this activity?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                Swal.fire('Deleted!', response.message, 'success').then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', response.message, 'error');
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('Error', 'Something went wrong.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

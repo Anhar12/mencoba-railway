@@ -1,0 +1,498 @@
+{% extends "Dashboard/base.html" %}
+
+{% block title %}
+About Management - Nusa Health Company
+{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="container pb-3">
+    <div class="w-100 py-3">
+        <h4 class="text-center fw-bold">About Content Management</h4>
+    </div>
+    <div class="d-flex flex-column gap-2 align-items-center w-100 container">
+        <!-- philosophy -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="philosophyManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="philosophyManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Philosophy Section Management
+            </p>
+            
+            <div id="philosophyFormContainer" class="d-none px-5">
+                <form id="philosophyForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="philosophy_image" class="">Philosophy Image</label>
+                            <input type="file" class="form-control" id="philosophy_image" name="philosophy_image">
+                            <img loading="lazy" id="philosophyPreview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if philosophy and philosophy.philosophy_image %}
+                                <img loading="lazy" id="philosophyNow" src="{{ philosophy.philosophy_image.url }}" alt="philosophy Image" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="philosophyPlaceholder" class="mt-2 text-muted">No Philosophy image uploaded</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="philosophy_text" class="">Philosophy Text</label>
+                            <textarea class="form-control" id="philosophy_text" name="philosophy_text" rows="12">
+                                {% if philosophy and philosophy.philosophy_text %}
+                                    {{ philosophy.philosophy_text }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="philosophyManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+
+        <!-- vision mission -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="visMisManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="visMisManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Vision & Mission Section Management
+            </p>
+            
+            <div id="visMisFormContainer" class="d-none px-5">
+                <form id="visMisForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="vision_text" class="">Vision Text</label>
+                            <textarea class="form-control" id="vision_text" name="vision_text" rows="14">
+                                {% if vision_mission and vision_mission.vision_text %}
+                                    {{ vision_mission.vision_text }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="mission_text" class="">Mission Text</label>
+                            <textarea class="form-control" id="mission_text" name="mission_text" rows="14">
+                                {% if vision_mission and vision_mission.mission_text %}
+                                    {{ vision_mission.mission_text }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="visMisManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+
+        <!-- business structure -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="businessManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="businessManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Business Structure Management
+            </p>
+            
+            <div id="businessFormContainer" class="d-none px-5">
+                <form id="businessForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="name_ceo" class="">CEO Name</label>
+                            <input type="text" class="form-control mb-3" id="name_ceo" name="name_ceo" value="{{ business_structure.name_ceo|default:'' }}">
+
+                            <label for="business1" class="">CEO Image</label>
+                            <input type="file" class="form-control" id="business1" name="business1">
+                            <img loading="lazy" id="business1Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if business_structure and business_structure.image_ceo %}
+                                <img loading="lazy" id="business1Now" src="{{ business_structure.image_ceo.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="business1Placeholder" class=" mt-2 text-muted">No image CEO uploaded</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="name_cfo" class="">COO Name</label>
+                            <input type="text" class="form-control mb-3" id="name_coo" name="name_coo" value="{{ business_structure.name_coo|default:'' }}">
+
+                            <label for="business2" class="">COO Image</label>
+                            <input type="file" class="form-control" id="business2" name="business2">
+                            <img loading="lazy" id="business2Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if business_structure and business_structure.image_coo %}
+                                <img loading="lazy" id="business2Now" src="{{ business_structure.image_coo.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="business2Placeholder" class=" mt-2 text-muted">No image COO uploaded</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="name_cfo" class="">CFO Name</label>
+                            <input type="text" class="form-control mb-3" id="name_cfo" name="name_cfo" value="{{ business_structure.name_cfo|default:'' }}">
+
+                            <label for="business3" class="">CFO Image</label>
+                            <input type="file" class="form-control" id="business3" name="business3">
+                            <img loading="lazy" id="business3Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if business_structure and business_structure.image_cfo %}
+                                <img loading="lazy" id="business3Now" src="{{ business_structure.image_cfo.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="business3Placeholder" class=" mt-2 text-muted">No image CFO uploaded</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="name_cto" class="">CTO Name</label>
+                            <input type="text" class="form-control mb-3" id="name_cto" name="name_cto" value="{{ business_structure.name_cto|default:'' }}">
+
+                            <label for="business4" class="">CTO Image</label>
+                            <input type="file" class="form-control" id="business4" name="business4">
+                            <img loading="lazy" id="business4Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if business_structure and business_structure.image_cto %}
+                                <img loading="lazy" id="business4Now" src="{{ business_structure.image_cto.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="business4Placeholder" class=" mt-2 text-muted">No image CTO uploaded</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="name_cmo" class="">CMO Name</label>
+                            <input type="text" class="form-control mb-3" id="name_cmo" name="name_cmo" value="{{ business_structure.name_cmo|default:'' }}">
+
+                            <label for="business5" class="">CMO Image</label>
+                            <input type="file" class="form-control" id="business5" name="business5">
+                            <img loading="lazy" id="business5Preview" class="preview mt-2 w-100" style="display: none;" />
+                            {% if business_structure and business_structure.image_cmo %}
+                                <img loading="lazy" id="business5Now" src="{{ business_structure.image_cmo.url }}" alt="Image Slider" class="now mt-2 w-100">
+                            {% else %}
+                                <p id="business5Placeholder" class=" mt-2 text-muted">No image CMO uploaded</p>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="sliderManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+
+        <!-- solutions -->
+        <div class="w-100 bg-white border fw-bold rounded-1 shadow-sm btn-expand-management">
+            <p id="solutionsManagementBtn" class="d-flex px-5 py-3 gap-3 align-items-center m-0 border-bottom">
+                <i id="solutionsManagementBtnIcon" class="fa-solid fa-angles-right fs-3" style="transition: transform 0.3s ease-in-out;"></i>
+                Solutions Section Management
+            </p>
+            
+            <div id="solutionsFormContainer" class="d-none px-5">
+                <form id="solutionsForm" class="ps-4 ms-3 py-3" action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="solution_title1" class="">Solution Title 1</label>
+                            <input type="text" class="form-control mb-3" id="solution_title1" name="solution_title1" value="{{ solutions.solution_title1|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="solution_description1" class="">Solution Description 1</label>
+                            <textarea class="form-control" id="solution_description1" name="solution_description1" rows="4">
+                                {% if solutions and solutions.solution_description1 %}
+                                    {{ solutions.solution_description1 }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="solution_title2" class="">Solution Title 2</label>
+                            <input type="text" class="form-control mb-3" id="solution_title2" name="solution_title2" value="{{ solutions.solution_title2|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="solution_description2" class="">Solution Description 2</label>
+                            <textarea class="form-control" id="solution_description2" name="solution_description2" rows="4">
+                                {% if solutions and solutions.solution_description2 %}
+                                    {{ solutions.solution_description2 }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="solution_title3" class="">Solution Title 3</label>
+                            <input type="text" class="form-control mb-3" id="solution_title3" name="solution_title3" value="{{ solutions.solution_title3|default:'' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="solution_description3" class="">Solution Description 3</label>
+                            <textarea class="form-control" id="solution_description3" name="solution_description3" rows="4">
+                                {% if solutions and solutions.solution_description3 %}
+                                    {{ solutions.solution_description3 }}
+                                {% endif %}
+                            </textarea>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-success px-3 fw-semibold">Save</button>
+                        <button id="solutionsManagementBtnCancel" class="btn btn-danger px-3 fw-semibold">Cancel</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'loading-spinner.html' %}
+
+<script>
+    $(document).ready(function() {
+        function cleanTextArea(){
+            $('#philosophy_text').val($('#philosophy_text').val().trim());
+            $('#vision_text').val($('#vision_text').val().trim());
+            $('#mission_text').val($('#mission_text').val().trim());
+            $('#solution_description1').val($('#solution_description1').val().trim());
+            $('#solution_description2').val($('#solution_description2').val().trim());
+            $('#solution_description3').val($('#solution_description3').val().trim());
+        }
+        cleanTextArea();
+
+        function SuccessPopUp(message){
+            Swal.fire({
+                icon: 'success',
+                title: 'Upload Successfully',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#198754',
+            }).then(() => {
+                location.reload();
+            });
+        }
+
+        function ErrorPopUp(message){
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload Failed',
+                text: message,
+                confirmButtonText: 'Ok',
+                confirmButtonColor: '#dc3545',
+            });
+        }
+
+        function buttonEvent(btn, formContainer, formInput) {
+            var formElem = $('#' + formContainer);
+            var iconElem = $('#' + btn + 'Icon');
+            var btnElem = $('#' + btn);
+
+            formElem.addClass('d-none').hide();
+            iconElem.removeClass('rotate-down');
+            btnElem.removeClass('text-primary');
+
+            btnElem.on('click', function() {
+                if (formElem.hasClass('d-none')) {
+                    formElem.removeClass('d-none').stop(true, true).slideDown(300);
+                    iconElem.addClass('rotate-down');
+                    btnElem.addClass('text-primary');
+                } else {
+                    formElem.stop(true, true).slideUp(300, function() {
+                        formElem.addClass('d-none');
+                    });
+                    iconElem.removeClass('rotate-down');
+                    btnElem.removeClass('text-primary');
+                }
+            });
+
+            $('#' + btn + 'Cancel').on('click', function() {
+                event.preventDefault();
+                formElem.stop(true, true).slideUp(300, function() {
+                    formElem.addClass('d-none');
+                });
+                iconElem.removeClass('rotate-down');
+                btnElem.removeClass('text-primary');
+                $('#' + formInput)[0].reset();
+                $('.preview').hide();
+                $('.placeholder').show();
+                $('.now').show();
+                cleanTextArea();
+            });
+        }
+
+        function onLoading() {
+            $('#loading').removeClass('d-none');
+            $('.overlay').removeClass('d-none');
+        }
+
+        function onLoaded() {
+            $('#loading').addClass('d-none');
+            $('.overlay').addClass('d-none');
+        }
+
+        buttonEvent('philosophyManagementBtn', 'philosophyFormContainer', 'philosophyForm');
+        buttonEvent('visMisManagementBtn', 'visMisFormContainer', 'visMisForm');
+        buttonEvent('businessManagementBtn', 'businessFormContainer', 'businessForm');
+        buttonEvent('solutionsManagementBtn', 'solutionsFormContainer', 'solutionsForm');
+
+        function previewImage(input, previewId, placeholderId, nowId) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#' + previewId).attr('src', e.target.result).show();
+                    $('#' + placeholderId).hide();
+                    $('#' + nowId).hide();
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                $('#' + previewId).hide();
+                $('#' + nowId).show();
+                $('#' + placeholderId).show();
+            }
+        }        
+
+        $('#philosophy_image').on('change', function() {
+            previewImage(this, 'philosophyPreview', 'philosophyPlaceholder', 'philosophyNow');
+        });
+        
+        for (let i = 1 ; i <= 5 ; i++) {
+            $('#business'+i.toString()).on('change', function() {
+                previewImage(this, 'business'+i.toString()+'Preview', 'business'+i.toString()+'Placeholder', 'business'+i.toString()+'Now');
+            });
+        }
+
+        $('#philosophyForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            let philosophyText = $('#philosophy_text').val().trim();
+            $('#philosophy_text').val(philosophyText);
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-philosophy' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+        
+        $('#visMisForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            let visionText = $('#vision_text').val().trim();
+            let missionText = $('#mission_text').val().trim();
+            $('#vision_text').val(visionText);
+            $('#mission_text').val(missionText);
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-vision-mission' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+
+        $('#businessForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-business-structure' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+        
+        $('#solutionsForm').on('submit', function(event) {
+            event.preventDefault();
+            onLoading();
+
+            $('#solution_description1').val($('#solution_description1').val().trim());
+            $('#solution_description2').val($('#solution_description2').val().trim());
+            $('#solution_description3').val($('#solution_description3').val().trim());
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'upload-solutions' %}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    onLoaded();
+                    if (response.status === 'success') {
+                        SuccessPopUp(response.message);
+                    } else {
+                        ErrorPopUp(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    onLoaded();
+                    ErrorPopUp('An error occurred while uploading logos.');
+                }
+            });
+        });
+       
+    });
+</script>
+
+{% endblock %}

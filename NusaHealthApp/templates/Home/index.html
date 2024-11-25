@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Nusa Health Company{% endblock %}
+
+{% block content %}
+
+<!-- Image Slider Start -->
+<section id="image-slider" class="pt-4 pb-5">
+    <div class="swiper-container overflow-hidden">
+        <div class="swiper-wrapper">
+            {% if slider and slider.image1 %}
+                <div class="swiper-slide">
+                    <img src="{{ slider.image1.url }}" alt="{{ slider.image1 }}">
+                    <div class="overlay" style="background: rgba(0, 193, 255, 0.15);"></div>
+                </div>
+            {% endif %}
+            {% if slider and slider.image2 %}
+                <div class="swiper-slide">
+                    <img src="{{ slider.image2.url }}" alt="{{ slider.image1 }}">
+                    <div class="overlay" style="background: rgba(0, 193, 255, 0.15);"></div>
+                </div>
+            {% endif %}
+            {% if slider and slider.image3 %}
+                <div class="swiper-slide">
+                    <img src="{{ slider.image3.url }}" alt="{{ slider.image1 }}">
+                    <div class="overlay" style="background: rgba(0, 193, 255, 0.15);"></div>
+                </div>
+            {% endif %}
+            {% if slider and slider.image4 %}
+                <div class="swiper-slide">
+                    <img src="{{ slider.image4.url }}" alt="{{ slider.image1 }}">
+                    <div class="overlay" style="background: rgba(0, 193, 255, 0.15);"></div>
+                </div>
+            {% endif %}
+            {% if slider and slider.image5 %}
+                <div class="swiper-slide">
+                    <img src="{{ slider.image5.url }}" alt="{{ slider.image1 }}">
+                    <div class="overlay" style="background: rgba(0, 193, 255, 0.15);"></div>
+                </div>
+            {% endif %}
+        </div>
+    
+        <!-- <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div> -->
+    </div>
+    
+    <div class="swiper-pagination"></div>
+</section>
+
+<script>
+    var swiper = new Swiper('.swiper-container', {
+        loop: true,
+        effect: 'slide',
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        // navigation: {
+        //     nextEl: '.swiper-button-next',
+        //     prevEl: '.swiper-button-prev',
+        // },
+    });
+</script>
+<!-- Image Slider End -->
+
+<!-- Hero start -->
+<section id="hero" class="py-5">
+    <div class="container d-flex flex-column flex-lg-row-reverse justify-content-between align-items-center py-5">
+        <div class="col-lg-5">
+            {% if hero and hero.hero_image %}
+                <img src="{{ hero.hero_image.url }}" class="d-block mx-auto h-100 w-100 mb-2 rounded-1" alt="NusaHealth" loading="lazy">
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            <h1 class="fw-bold mb-1">Health Care <span class="text-primary">For All</span></h1>
+            <p class="lead mb-1 text-secondary"><i>Comprehensive Healthcare Solutions at NusaHealth</i></p>
+            <p class="lead mb-1 text-justify">
+                {% if hero and hero.hero_text %}
+                    {{ hero.hero_text }}
+                {% endif %}
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-between align-items-center">
+                <p class="lead mb-1 text-secondary"><i>“Your Health, Our Priority”</i></p>
+                <a class="btn btn-outline-primary btn-lg fw-bold rounded-0" href="{% url 'about' %}">Read More
+                    &raquo;</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero end -->
+
+<!-- Services start -->
+<section id="services" class="py-5 bg-light">
+    <div class="container py-5">
+        <h1 class="text-center fw-bold text-primary">OUR SERVICES</h1>
+        <p class="lead mb-5 text-secondary text-center"><i>Services Our Company Provides</i></p>
+        <div class="d-flex flex-wrap justify-content-center gap-5">
+            <div class="card rounded shadow border" style="width: 20rem;">
+                <img src="{{services.service_image1.url}}" class="card-img-top" alt="MCU Registration">
+                <div class="service-overlay"></div>
+                <div class="card-body card-services rounded-bottom bg-light text-dark p-0">
+                    <h5 class="card-title bg-primary p-2 text-light fw-bold d-flex align-items-center" style="gap: 10px;">
+                        <span class="icon-container">
+                            <svg class="text-light arrow-services" width="20px" fill="none" viewBox="0 3 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </span> 
+                        <p class="d-inline-block text-truncate mb-0" style="font-size: 16px;">
+                            {{services.service_title1}}
+                        </p>
+                    </h5>
+                    <p class="card-text text-secondary px-3 pb-2 text-truncate-4 text-justify">
+                        {{services.service_description1}}
+                    </p>
+                </div>
+            </div>
+            <div class="card rounded shadow border" style="width: 20rem;">
+                <img src="{{services.service_image2.url}}" class="card-img-top" alt="MCU Activity">
+                <div class="service-overlay"></div>
+                <div class="card-body card-services rounded-bottom bg-light text-dark p-0">
+                    <h5 class="card-title bg-primary p-2 text-light fw-bold d-flex align-items-center" style="gap: 10px;">
+                        <span class="icon-container">
+                            <svg class="text-light arrow-services" width="20px" fill="none" viewBox="0 3 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </span> 
+                        <p class="d-inline-block text-truncate mb-0" style="font-size: 16px;">
+                            {{services.service_title2}}
+                        </p>
+                    </h5>
+                    <p class="card-text text-secondary px-3 pb-2 text-truncate-4 text-justify">
+                        {{services.service_description2}}
+                    </p>
+                </div>
+            </div>
+            <div class="card rounded shadow border" style="width: 20rem;">
+                <img src="{{services.service_image3.url}}" class="card-img-top" alt="MCU Certificate">
+                <div class="service-overlay"></div>
+                <div class="card-body card-services rounded-bottom bg-light text-dark p-0">
+                    <h5 class="card-title bg-primary p-2 text-light fw-bold d-flex align-items-center" style="gap: 10px;">
+                        <span class="icon-container">
+                            <svg class="text-light arrow-services" width="20px" fill="none" viewBox="0 3 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </span> 
+                        <p class="d-inline-block text-truncate mb-0" style="font-size: 16px;">
+                            {{services.service_title3}}
+                        </p>
+                    </h5>
+                    
+                    <p class="card-text text-secondary px-3 pb-2 text-truncate-4 text-justify">
+                        {{services.service_description3}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Sevices end -->
+
+{% endblock %}

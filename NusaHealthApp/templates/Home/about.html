@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}
+About - Nusa Health Company
+{% endblock %}
+
+{% block content %}
+
+<!-- Philosophy start -->
+<section id="philosophy" class="pb-5" style="padding-top: 5.2rem;">
+    <div class="container d-flex flex-column flex-lg-row-reverse justify-content-between align-items-center py-5" style="min-height: 400px;">
+        <div class="col-lg-6 d-flex flex-column justify-content-center align-items-start">
+            <h1 class="fw-bold mb-3 text-primary" style="font-size: 2.5rem;">PHILOSOPHY</h1>
+            <p class="lead mb-4 text-justify" style="font-size: 1.125rem;">
+                {{philosophy.philosophy_text}}
+            </p>
+        </div>
+        <div class="col-lg-5 d-flex justify-content-center align-items-center">
+            <img src="{{philosophy.philosophy_image.url}}" class="img-fluid mb-2 rounded-1" alt="NusaHealth Philosophy" loading="lazy" style="max-height: 300px; width: auto;">
+        </div>
+    </div>
+</section>
+<!-- Philosophy end -->
+
+<!-- Vision & Mission Start -->
+<section id="vision&mission" class="py-3 bg-light">
+    <div class="container py-5">
+        <h1 class="text-center fw-bold text-primary">VISION & MISSION</h1>
+        <p class="lead mb-5 text-secondary text-center"><i>NusaHealth’s Vision & Mission</i></p>
+        <div class="d-flex flex-column flex-lg-row-reverse justify-content-between align-items-center">
+            <div class="col-lg-5">
+                <img src="static/NusaHealthApp/images/vision&mission.png" class="d-block mx-auto h-100 w-100 mb-2 rounded-1"
+                    alt="NusaHealth" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-0 text-primary">Vision</span></h1>
+                    <p class="lead mb-1 text-justify">
+                        {{ vision }}
+                    </p>
+                </div>
+                <h2 class="fw-bold mb-0 text-primary">Mission</span></h1>
+                <div class="lead mb-1 text-justify">
+                    {{ mission|safe }}
+                </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Vision & Mission End -->
+
+<!-- Business Structure Start -->
+<section id="business-structure" class="py-3">
+    <div class="container py-5">
+        <h1 class="text-center fw-bold text-primary">BUSINESS STRUCTURE</h1>
+        <p class="lead mb-5 text-secondary text-center"><i>NusaHealth’s Business Structure</i></p>
+        <div class="d-flex flex-wrap justify-content-center gap-4">
+            <div class="card border border-dark shadow" style="width: 12rem;">
+                <div class="d-flex justify-content-center pt-4 pb-3">
+                    <img src="{{business_structure.image_ceo.url}}" alt="" style="width: 150px; height: 150px; object-fit: cover; object-position: top;" class="rounded-circle">
+                </div>
+                <h2 class="fw-bold text-center">
+                    CEO
+                </h2>
+                <div class="px-3 bg-warning border-dark border-top pt-3 h-100 d-flex align-items-center justify-content-center">
+                    <p class="text-white text-center fw-bold">
+                        {{business_structure.name_ceo}}
+                    </p>
+                </div>
+            </div>
+            <div class="card border border-dark shadow" style="width: 12rem;">
+                <div class="d-flex justify-content-center pt-4 pb-3">
+                    <img src="{{business_structure.image_coo.url}}" alt="" style="width: 150px; height: 150px; object-fit: cover; object-position: top;" class="rounded-circle">
+                </div>
+                <h2 class="fw-bold text-center">
+                    COO
+                </h2>
+                <div class="px-3 bg-warning border-dark border-top pt-3 h-100 d-flex align-items-center justify-content-center">
+                    <p class="text-white text-center fw-bold">
+                        {{business_structure.name_coo}}
+                    </p>
+                </div>
+            </div>
+            <div class="card border border-dark shadow" style="width: 12rem;">
+                <div class="d-flex justify-content-center pt-4 pb-3">
+                    <img src="{{business_structure.image_cfo.url}}" alt="" style="width: 150px; height: 150px; object-fit: cover; object-position: top;" class="rounded-circle">
+                </div>
+                <h2 class="fw-bold text-center">
+                    CFO
+                </h2>
+                <div class="px-3 bg-warning border-dark border-top pt-3 h-100 d-flex align-items-center justify-content-center">
+                    <p class="text-white text-center fw-bold">
+                        {{business_structure.name_cfo}}
+                    </p>
+                </div>
+            </div>
+            <div class="card border border-dark shadow" style="width: 12rem;">
+                <div class="d-flex justify-content-center pt-4 pb-3">
+                    <img src="{{business_structure.image_cto.url}}" alt="" style="width: 150px; height: 150px; object-fit: cover; object-position: top;" class="rounded-circle">
+                </div>
+                <h2 class="fw-bold text-center">
+                    CTO
+                </h2>
+                <div class="px-3 bg-warning border-dark border-top pt-3 h-100 d-flex align-items-center justify-content-center">
+                    <p class="text-white text-center fw-bold">
+                        {{business_structure.name_cto}}
+                    </p>
+                </div>
+            </div>
+            <div class="card border border-dark shadow" style="width: 12rem;">
+                <div class="d-flex justify-content-center pt-4 pb-3">
+                    <img src="{{business_structure.image_cmo.url}}" alt="" style="width: 150px; height: 150px; object-fit: cover; object-position: top;" class="rounded-circle">
+                </div>
+                <h2 class="fw-bold text-center">
+                    CMO
+                </h2>
+                <div class="px-3 bg-warning border-dark border-top pt-3 h-100 d-flex align-items-center justify-content-center">
+                    <p class="text-white text-center fw-bold">
+                        {{business_structure.name_cmo}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- WhyChooseUs start -->
+<section id="solutions" class="py-3 bg-light">
+    <div class="container py-5">
+        <h1 class="text-center fw-bold text-primary">SOLUTIONS</h1>
+        <p class="lead mb-5 text-secondary text-center"><i>Why Choose Us?</i></p>
+        <div class="d-flex flex-wrap justify-content-center gap-5">
+            <div class="card shadow-btn border border-primary" style="width: 18rem;">
+                <div class="d-flex justify-content-center pt-5 pb-4">
+                    <i class="fa-solid fa-hand-holding-medical text-warning" style="font-size: 100px;"></i>
+                </div>
+                <div class="card-body px-3 py-2">
+                    <h5 class="card-title py-3 m-0 text-dark border-bottom text-center fw-bold">{{solutions.solution_title1}}</h5>
+                    <p class="card-text py-3 text-secondary text-justify">
+                        {{solutions.solution_description1}}
+                    </p>
+                </div>
+            </div>
+            <div class="card shadow-btn border border-primary" style="width: 18rem;">
+                <div class="d-flex justify-content-center pt-5 pb-4">
+                    <i class="fa-solid fa-user-doctor text-warning" style="font-size: 100px;"></i>
+                </div>
+                <div class="card-body px-3 py-2">
+                    <h5 class="card-title py-3 m-0 text-dark border-bottom text-center fw-bold">{{solutions.solution_title2}}</h5>
+                    <p class="card-text py-3 text-secondary text-justify text-center">
+                        {{solutions.solution_description2}}
+                    </p>
+                </div>
+            </div>
+            <div class="card shadow-btn border border-primary" style="width: 18rem;">
+                <div class="d-flex justify-content-center pt-5 pb-4">
+                    <i class="fa-solid fa-laptop-medical text-warning" style="font-size: 100px;"></i>
+                </div>
+                <div class="card-body px-3 py-2">
+                    <h5 class="card-title py-3 m-0 text-dark border-bottom text-center fw-bold">{{solutions.solution_title3}}</h5>
+                    <p class="card-text py-3 text-secondary text-justify text-center">
+                        {{solutions.solution_description3}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- WhyChooseUs end -->
+
+{% endblock %}
